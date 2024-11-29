@@ -1,0 +1,7 @@
+small vehicle: 429
+large vehicle: 25
+tennis court: 51
+plane: 5
+ship: 7
+storage tank: 18
+Total detected objects: 535

@@ -23,7 +23,7 @@ def load_yolo_model(yolo_model_path):
 
 def process_image(model, image_path, output_path, tile_size=4096, overlap_ratio=0.2, detection_threshold=0.5, model_imgsz=2048):
     try:
-        Image.MAX_IMAGE_PIXELS = None  # Disable DecompressionBombError protection for large images
+        Image.MAX_IMAGE_PIXELS = None  # DecompressionBombError
         img = Image.open(image_path)
         img = img.convert("RGB")
     except Exception as e:
@@ -34,27 +34,22 @@ def process_image(model, image_path, output_path, tile_size=4096, overlap_ratio=
     overlap = int(tile_size * overlap_ratio)
     stride = tile_size - overlap
 
-    # Prepare to draw final image
     final_image = img.copy()
     draw_final = ImageDraw.Draw(final_image)
     font = ImageFont.load_default()
 
-    # To keep track of detected objects to avoid duplicates
     seen_objects = []
     object_count = 0
     class_counter = Counter()
 
-    # Iterate through the image and process each tile
     for top in range(0, img_height, stride):
         for left in range(0, img_width, stride):
             right = min(left + tile_size, img_width)
             bottom = min(top + tile_size, img_height)
             tile = img.crop((left, top, right, bottom))
 
-            # Run inference on the tile
             results = model.predict(source=tile, imgsz=model_imgsz, conf=detection_threshold)
 
-            # Ensure results are not None
             if results and results[0].obb is not None:
                 obb_boxes = results[0].obb.xyxyxyxy.cpu().numpy()
                 confs = results[0].obb.conf.cpu().numpy()
@@ -78,10 +73,8 @@ def process_image(model, image_path, output_path, tile_size=4096, overlap_ratio=
                     draw_final.rectangle([min_x, min_y - text_offset - 10, min_x + len(label) * 6, min_y - text_offset], fill="black")
                     draw_final.text((min_x, min_y - text_offset - 10), label, fill="white", font=font)
 
-    # Save the final image with all detections
     final_image.save(output_path, format="PNG")
 
-    # Save detection information to a text file
     info_output_path = os.path.splitext(output_path)[0] + "_info.txt"
     with open(info_output_path, 'w') as info_file:
         if class_counter:
@@ -96,7 +89,6 @@ def process_image(model, image_path, output_path, tile_size=4096, overlap_ratio=
 
 
 if __name__ == "__main__":
-    # Load parameters from JSON file passed by gui.py
     if len(sys.argv) != 2:
         print("Usage: python process.py <config.json>")
         sys.exit(1)

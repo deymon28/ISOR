@@ -13,14 +13,12 @@ class FormControls:
         self.init_controls()
 
     def init_controls(self):
-        # Create a form frame to hold the controls
         self.form_frame = QFrame(self.parent)
         self.form_layout = QVBoxLayout()
         self.form_frame.setLayout(self.form_layout)
         self.form_frame.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         self.form_layout.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
-        # Apply overall styling to the form frame
         self.form_frame.setStyleSheet(
             """
             QFrame {
@@ -53,7 +51,6 @@ class FormControls:
             """
         )
 
-        # Model Path Selection
         self.model_path_label = QLabel('YOLO Model Path:')
         self.form_layout.addWidget(self.model_path_label, alignment=Qt.AlignCenter)
 
@@ -69,7 +66,6 @@ class FormControls:
         model_layout.addWidget(self.model_path_button)
         self.form_layout.addLayout(model_layout)
 
-        # Image Path Selection
         self.image_path_label = QLabel('Image Path:')
         self.form_layout.addWidget(self.image_path_label, alignment=Qt.AlignCenter)
 
@@ -85,7 +81,6 @@ class FormControls:
         image_layout.addWidget(self.image_path_button)
         self.form_layout.addLayout(image_layout)
 
-        # Detection Threshold
         self.threshold_label = QLabel('Detection Threshold:')
         self.form_layout.addWidget(self.threshold_label, alignment=Qt.AlignCenter)
 
@@ -94,7 +89,6 @@ class FormControls:
         self.threshold_entry.setText("0.5")
         self.form_layout.addWidget(self.threshold_entry, alignment=Qt.AlignCenter)
 
-        # Tile Size
         self.tile_size_label = QLabel('Tile Size:')
         self.form_layout.addWidget(self.tile_size_label, alignment=Qt.AlignCenter)
 
@@ -103,7 +97,6 @@ class FormControls:
         self.tile_size_entry.setText("4096")
         self.form_layout.addWidget(self.tile_size_entry, alignment=Qt.AlignCenter)
 
-        # Model Image Size
         self.model_imgsz_label = QLabel('Model Image Size:')
         self.form_layout.addWidget(self.model_imgsz_label, alignment=Qt.AlignCenter)
 
@@ -112,13 +105,11 @@ class FormControls:
         self.model_imgsz_entry.setText("2048")
         self.form_layout.addWidget(self.model_imgsz_entry, alignment=Qt.AlignCenter)
 
-        # Start Button
         self.start_button = QPushButton('Start Processing', self.parent)
         self.start_button.setMaximumWidth(200)
         self.start_button.clicked.connect(self.parent.start_processing)
         self.form_layout.addWidget(self.start_button, alignment=Qt.AlignCenter)
 
-        # Progress Indicator
         self.progress_label = QLabel('Processing...', self.parent)
         self.progress_label.setStyleSheet("font-size: 14px; color: #ff0000;")
         self.progress_label.setVisible(False)

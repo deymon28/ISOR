@@ -28,11 +28,9 @@ class YOLOProcessorApp(QFrame):
         self.resize(1200, 800)
         self.center()
 
-        # Main layout
         self.main_layout = QHBoxLayout()
         self.setLayout(self.main_layout)
 
-        # Create and set form controls (initial screen)
         self.show_form_controls()
 
     def show_form_controls(self):
@@ -46,10 +44,8 @@ class YOLOProcessorApp(QFrame):
             else:
                 del item
 
-        # Set the background to white to clear any residual elements
         self.setStyleSheet("background-color: white;")
 
-        # Create and set form controls
         self.form_controls = FormControls(self)
         form_frame = self.form_controls.get_form_frame()
         self.main_layout.addWidget(form_frame, alignment=Qt.AlignHCenter | Qt.AlignVCenter)
@@ -104,10 +100,8 @@ class YOLOProcessorApp(QFrame):
             else:
                 del item
 
-        # Set background color to reset it after clearing
         self.setStyleSheet("background-color: white;")
 
-        # Main layout for results (horizontal layout)
         results_layout = QHBoxLayout()
 
         # Left Frame for information and buttons
@@ -118,11 +112,9 @@ class YOLOProcessorApp(QFrame):
         left_frame.setMaximumWidth(300)  # Set maximum width to avoid excessive enlargement
         results_layout.addWidget(left_frame)
 
-        # Detected Objects Information
         result_label = QLabel('Detected Objects Information:')
         left_layout.addWidget(result_label)
 
-        # Displaying detected objects information (using actual data from processing)
         info_path = os.path.splitext(output_path)[0] + "_info.txt"
         detected_info = ""
         if os.path.exists(info_path) and os.path.getsize(info_path) > 0:
@@ -155,22 +147,19 @@ class YOLOProcessorApp(QFrame):
         right_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         results_layout.addWidget(right_frame)
 
-        # Load and display the processed image with zoom and pan functionality
         zoomable_image = ZoomableImage(right_frame, output_path)
         right_layout.addWidget(zoomable_image)
 
-        # Set the new layout
         self.main_layout.addLayout(results_layout)
 
     def save_results(self, output_path, detected_info):
         options = QFileDialog.Options()
         save_path, _ = QFileDialog.getSaveFileName(self, "Save Processed Image", "", "PNG Files (*.png);;All Files (*)", options=options)
         if save_path:
-            # Save the processed image
+
             pixmap = QPixmap(output_path)
             pixmap.save(save_path)
 
-            # Save the detected objects information
             txt_path = os.path.splitext(save_path)[0] + "_info.txt"
             with open(txt_path, 'w') as txt_file:
                 txt_file.write(detected_info)
@@ -182,7 +171,6 @@ class YOLOProcessorApp(QFrame):
     #     QCoreApplication.quit()
     #     os.execv(sys.executable, [sys.executable] + sys.argv)
     def restart_application(self):
-    # Use the Python installation from "C:\Program Files\Python312\python.exe"
         python_path = r"C:\Program Files\Python312\python.exe"
 
         if not os.path.exists(python_path):
@@ -208,7 +196,6 @@ class ZoomableImage(QLabel):
         self.setMouseTracking(True)
 
     def wheelEvent(self, event):
-        # Zoom in/out with mouse wheel relative to cursor position
         cursor_pos = event.pos()
         old_x = cursor_pos.x() - self.offset.x()
         old_y = cursor_pos.y() - self.offset.y()
@@ -222,12 +209,10 @@ class ZoomableImage(QLabel):
         new_width = self.pixmap.width() * self.scale_factor
         new_height = self.pixmap.height() * self.scale_factor
 
-        # Update offset to keep the zoom centered on the cursor
         new_x = old_x * (factor - 1)
         new_y = old_y * (factor - 1)
         self.offset -= QPoint(int(new_x), int(new_y))
 
-        # Apply the transformation
         self.update()
 
     def mousePressEvent(self, event):
